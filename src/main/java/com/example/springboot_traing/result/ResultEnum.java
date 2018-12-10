@@ -14,6 +14,10 @@ public enum ResultEnum {
     THE_USER_NAME_ALREADY_EXISTS(201, "用户名已经存在"),
     PASSWORD_STRUCTURE(202, "密码必须为6到12位的大小写字母或者数字构成"),
     PARAMS_INVALID(203, "参数无效"),
+    SEND_MAIL_FAIL(204, "发送邮件过于频繁, 请稍后再试"),
+    INVALID_MAIL(205, "无效邮箱"),
+    CODE_INVALID(206, "验证码无效"),
+    PASSWORD_INVALID(207, "密码无效"),
     ROUTE_ERROR(404, "url不存在");
 
     public int code;

@@ -2,6 +2,7 @@ package com.example.springboot_traing.service;
 
 import com.example.springboot_traing.entity.User;
 import com.example.springboot_traing.repository.UserRepository;
+import com.example.springboot_traing.utils.CommonUtil;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -40,5 +41,24 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
             userRepository.save(user);
             return true;
         }
+    }
+
+    @Override
+    public Optional<User> findByUsername(String username) {
+        return userRepository.findByUsername(username);
+    }
+
+    @Override
+    public User checkUserByUsernameAndPassword(String username, String password) {
+        return findByUsername(username).map(user -> {
+            if (BCrypt.checkpw(password, user.getPassword())) {
+               String token = CommonUtil.md5(CommonUtil.random(11, CommonUtil.STRING) + System.currentTimeMillis(), true);
+               user.setLastLogin(new Timestamp(System.currentTimeMillis()));
+               user.setToken(token);
+               return user;
+            } else {
+                return null;
+            }
+        }).orElse(null);
     }
 }

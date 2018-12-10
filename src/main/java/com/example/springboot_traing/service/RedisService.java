@@ -6,6 +6,10 @@ package com.example.springboot_traing.service;
  * @Time: 14:52
  */
 public interface RedisService {
+    static String MAIL = "send_mail_interval_limit:";
+    static String CODE = "mail_code:";
+    static int MAIL_EXPIRES = 60000;
+    static int CODE_EXPIRES = 300000;
 
     // 设置key
     boolean set(String key, Object value);

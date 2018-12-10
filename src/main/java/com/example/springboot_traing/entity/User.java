@@ -1,9 +1,7 @@
 package com.example.springboot_traing.entity;
 
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+
+import javax.persistence.*;
 import java.sql.Timestamp;
 
 /**
@@ -20,6 +18,9 @@ public class User {
     private Timestamp lastLogin;
     private Timestamp gtime;
     private Timestamp utime;
+
+    @Transient
+    private String token;
 
     @Id
     @Column(name = "id")
@@ -91,6 +92,15 @@ public class User {
         this.utime = utime;
     }
 
+    @Transient
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -105,8 +115,7 @@ public class User {
         if (lastLogin != null ? !lastLogin.equals(user.lastLogin) : user.lastLogin != null) return false;
         if (gtime != null ? !gtime.equals(user.gtime) : user.gtime != null) return false;
         if (utime != null ? !utime.equals(user.utime) : user.utime != null) return false;
-
-        return true;
+        return token != null ? token.equals(user.token) : user.token == null;
     }
 
     @Override
@@ -118,6 +127,7 @@ public class User {
         result = 31 * result + (lastLogin != null ? lastLogin.hashCode() : 0);
         result = 31 * result + (gtime != null ? gtime.hashCode() : 0);
         result = 31 * result + (utime != null ? utime.hashCode() : 0);
+        result = 31 * result + (token != null ? token.hashCode() : 0);
         return result;
     }
 }

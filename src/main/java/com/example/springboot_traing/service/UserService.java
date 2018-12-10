@@ -15,4 +15,8 @@ public interface UserService {
 
     boolean createUser(String username, String password);
 
+    Optional<User> findByUsername(String username);
+
+    User checkUserByUsernameAndPassword(String username, String password);
+
 }
