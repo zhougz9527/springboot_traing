@@ -13,7 +13,8 @@ public enum ResultEnum {
     SUCCESS(200, "请求成功"),
     THE_USER_NAME_ALREADY_EXISTS(201, "用户名已经存在"),
     PASSWORD_STRUCTURE(202, "密码必须为6到12位的大小写字母或者数字构成"),
-    PARAMS_INVALID(203, "参数无效");
+    PARAMS_INVALID(203, "参数无效"),
+    ROUTE_ERROR(404, "url不存在");
 
     public int code;
     public String msg;
