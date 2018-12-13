@@ -1,6 +1,5 @@
 package com.example.springboot_traing.controller;
 
-import com.example.springboot_traing.entity.User;
 import com.example.springboot_traing.result.Result;
 import com.example.springboot_traing.result.ResultUtil;
 import com.example.springboot_traing.service.MailService;
@@ -11,7 +10,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import org.omg.CORBA.PUBLIC_MEMBER;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
