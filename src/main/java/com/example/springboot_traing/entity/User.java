@@ -10,14 +10,12 @@ import java.sql.Timestamp;
  * @Time: 23:42
  */
 @Entity
-public class User {
+public class User extends BaseEntity {
     private int id;
     private String username;
     private String avatar;
     private String password;
     private Timestamp lastLogin;
-    private Timestamp gtime;
-    private Timestamp utime;
 
     @Transient
     private String token;
@@ -72,26 +70,6 @@ public class User {
         this.lastLogin = lastLogin;
     }
 
-    @Basic
-    @Column(name = "gtime")
-    public Timestamp getGtime() {
-        return gtime;
-    }
-
-    public void setGtime(Timestamp gtime) {
-        this.gtime = gtime;
-    }
-
-    @Basic
-    @Column(name = "utime")
-    public Timestamp getUtime() {
-        return utime;
-    }
-
-    public void setUtime(Timestamp utime) {
-        this.utime = utime;
-    }
-
     @Transient
     public String getToken() {
         return token;
@@ -113,8 +91,6 @@ public class User {
         if (avatar != null ? !avatar.equals(user.avatar) : user.avatar != null) return false;
         if (password != null ? !password.equals(user.password) : user.password != null) return false;
         if (lastLogin != null ? !lastLogin.equals(user.lastLogin) : user.lastLogin != null) return false;
-        if (gtime != null ? !gtime.equals(user.gtime) : user.gtime != null) return false;
-        if (utime != null ? !utime.equals(user.utime) : user.utime != null) return false;
         return token != null ? token.equals(user.token) : user.token == null;
     }
 
@@ -125,8 +101,6 @@ public class User {
         result = 31 * result + (avatar != null ? avatar.hashCode() : 0);
         result = 31 * result + (password != null ? password.hashCode() : 0);
         result = 31 * result + (lastLogin != null ? lastLogin.hashCode() : 0);
-        result = 31 * result + (gtime != null ? gtime.hashCode() : 0);
-        result = 31 * result + (utime != null ? utime.hashCode() : 0);
         result = 31 * result + (token != null ? token.hashCode() : 0);
         return result;
     }

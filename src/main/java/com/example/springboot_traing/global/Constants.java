@@ -5,5 +5,5 @@ package com.example.springboot_traing.global;
  * @Date: 2018/12/9
  * @Time: 22:50
  */
-public class Constant {
+public class Constants {
 }

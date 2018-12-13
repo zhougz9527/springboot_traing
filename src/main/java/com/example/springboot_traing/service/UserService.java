@@ -19,4 +19,6 @@ public interface UserService {
 
     User checkUserByUsernameAndPassword(String username, String password);
 
+    Optional<User> resetPassword(String username, String password);
+
 }

@@ -48,6 +48,9 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
         return userRepository.findByUsername(username);
     }
 
+    /*
+     * 校验账号、密码
+     */
     @Override
     public User checkUserByUsernameAndPassword(String username, String password) {
         return findByUsername(username).map(user -> {
@@ -60,5 +63,18 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
                 return null;
             }
         }).orElse(null);
+    }
+
+    /*
+     * 重置密码
+     */
+    @Override
+    public Optional<User> resetPassword(String username, String password) {
+        return findByUsername(username).map(user -> {
+            String newPassword = BCrypt.hashpw(password, BCrypt.gensalt());
+            user.setPassword(newPassword);
+            save(user);
+            return Optional.of(user);
+        }).orElse(Optional.empty());
     }
 }

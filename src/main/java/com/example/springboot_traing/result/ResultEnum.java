@@ -18,7 +18,9 @@ public enum ResultEnum {
     INVALID_MAIL(205, "无效邮箱"),
     CODE_INVALID(206, "验证码无效"),
     PASSWORD_INVALID(207, "密码无效"),
-    ROUTE_ERROR(404, "url不存在");
+    USERNAME_INVALID(208, "用户名不存在"),
+    ROUTE_ERROR(404, "路由存在"),
+    ERROR(500, "操作错误");
 
     public int code;
     public String msg;
