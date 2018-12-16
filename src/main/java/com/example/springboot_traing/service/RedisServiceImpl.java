@@ -6,6 +6,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -57,8 +58,7 @@ public class RedisServiceImpl extends BaseServiceImpl implements RedisService {
 
     @Override
     public Object get(String key) {
-        Object object = redisTemplate.opsForValue().get(key);
-        return object;
+        return exists(key) ? redisTemplate.opsForValue().get(key) : null;
     }
 
     @Override
@@ -68,18 +68,12 @@ public class RedisServiceImpl extends BaseServiceImpl implements RedisService {
 
     @Override
     public boolean delete(String key) {
-        if (exists(key)) {
-            return redisTemplate.delete(key);
-        }
-        return false;
+        return exists(key) ? redisTemplate.delete(key) : true;
     }
 
     @Override
     public boolean expire(String key, long timeout) {
-        if (exists(key)) {
-            return redisTemplate.expire(key, timeout, TimeUnit.SECONDS);
-        }
-        return false;
+        return exists(key) ? redisTemplate.expire(key, timeout, TimeUnit.SECONDS) : false;
     }
 
     @Override

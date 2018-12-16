@@ -1,15 +1,20 @@
 package com.example.springboot_traing.service;
 
+import java.util.Optional;
+
 /**
  * @Author: Think
  * @Date: 2018/12/10
  * @Time: 14:52
  */
 public interface RedisService {
-    static String MAIL = "send_mail_interval_limit:";
-    static String CODE = "mail_code:";
-    static int MAIL_EXPIRES = 60000;
-    static int CODE_EXPIRES = 300000;
+    String MAIL = "send_mail_interval_limit:";
+    String CODE = "mail_code:";
+    String TOKEN = "token:";
+    String USER = "user:";
+    int MAIL_EXPIRES = 60000;
+    int CODE_EXPIRES = 300000;
+    int TOKEN_EXPIRES = 21600000;
 
     // 设置key
     boolean set(String key, Object value);

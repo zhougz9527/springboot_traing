@@ -19,17 +19,22 @@ public class IOServiceImpl extends BaseServiceImpl implements IOService {
 
 
     @Override
-    public String download(MultipartFile file, String downloadPath) {
+    public String download(MultipartFile file, String downloadFolder, String fileName) {
         String path = "";
         FileOutputStream fos = null;
         BufferedOutputStream bos = null;
+        String downloadFilePath = downloadFolder + File.separator + fileName;
         try {
             byte[] bytes = file.getBytes();
-            File downloadFile = new File(downloadPath);
-            fos = new FileOutputStream(downloadFile);
+            File folder = new File(downloadFolder);
+            if (!folder.exists()) {
+                folder.mkdirs();
+            }
+            fos = new FileOutputStream(downloadFilePath);
             bos = new BufferedOutputStream(fos);
             bos.write(bytes);
             bos.flush();
+            path = downloadFilePath;
         } catch (IOException e) {
             e.printStackTrace();
             logger.error("download file exception: {}", e.getMessage());
@@ -54,5 +59,20 @@ public class IOServiceImpl extends BaseServiceImpl implements IOService {
         String fileName = StringUtils.isEmpty(file.getOriginalFilename()) ? file.getName() : file.getOriginalFilename();
         String[] fileNameSplits = fileName.split("\\.");
         return fileNameSplits[fileNameSplits.length-1];
+    }
+
+    @Override
+    public String getFileName(MultipartFile file) {
+        return StringUtils.isEmpty(file.getOriginalFilename()) ? file.getName() : file.getOriginalFilename();
+    }
+
+    @Override
+    public boolean delete(String filePath) {
+        boolean success = false;
+        if (!StringUtils.isEmpty(filePath)) {
+            File file = new File(filePath);
+            success = file.delete();
+        }
+        return success;
     }
 }

@@ -1,21 +1,34 @@
 package com.example.springboot_traing.config;
 
+import com.alibaba.fastjson.JSON;
+import com.example.springboot_traing.entity.User;
+import com.example.springboot_traing.result.Result;
+import com.example.springboot_traing.result.ResultUtil;
+import com.example.springboot_traing.service.RedisService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.omg.CORBA.OBJ_ADAPTER;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 
 /**
  * @Author: Think
  * @Date: 2018/12/9
  * @Time: 22:37
  */
-@WebFilter(urlPatterns = {"/user/*"}, filterName = "PermissionFilter")
+@WebFilter(urlPatterns = {"/user/*"}, filterName = "permissionFilter")
 public class PermissionFilter implements Filter {
+
+    @Autowired
+    RedisService redisService;
 
     private static final Logger logger = LogManager.getLogger();
 
@@ -42,10 +55,46 @@ public class PermissionFilter implements Filter {
         String token = httpServletRequest.getHeader("X-SpringBoot-Token");
         String method = httpServletRequest.getMethod();
 
-        if ("OPTIONS".equals(method)) {
+        boolean success = false;
+        Result result = null;
+        if (method.equals("OPTIONS")) {
             httpServletResponse.setStatus(HttpServletResponse.SC_OK);
         } else {
-            // TODO ...
+            if (!StringUtils.isEmpty(token)) {
+                Object object = redisService.get(redisService.TOKEN + token);
+                if (null != object) {
+                    httpServletRequest.setAttribute("user", object);
+                    success = true;
+                }
+            } else {
+                result = ResultUtil.error(210);
+            }
+
+            if (success) {
+                filterChain.doFilter(httpServletRequest, httpServletResponse);
+            } else {
+                PrintWriter writer = null;
+                OutputStreamWriter osw = null;
+                try {
+                    osw = new OutputStreamWriter(httpServletResponse.getOutputStream(), "UTF-8");
+                    writer = new PrintWriter(osw, true);
+                    String jsonStr = JSON.toJSONString(result);
+                    writer.write(jsonStr);
+                    writer.flush();
+                    writer.close();
+                    osw.close();
+                    logger.info(result.toString());
+                } catch (Exception e) {
+                    logger.error(" permission filter exception: {}", e.getMessage());
+                } finally {
+                    if (null != writer) {
+                        writer.close();
+                    }
+                    if (null != osw) {
+                        osw.close();
+                    }
+                }
+            }
         }
 
     }

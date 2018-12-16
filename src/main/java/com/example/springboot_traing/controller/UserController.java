@@ -1,18 +1,25 @@
 package com.example.springboot_traing.controller;
 
+import com.example.springboot_traing.entity.User;
+import com.example.springboot_traing.global.Constants;
 import com.example.springboot_traing.result.Result;
+import com.example.springboot_traing.result.ResultUtil;
 import com.example.springboot_traing.service.IOService;
-import com.example.springboot_traing.service.OssService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
+import com.example.springboot_traing.service.AliYunOssService;
+import com.example.springboot_traing.service.UserService;
+import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
+
+import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import springfox.documentation.annotations.ApiIgnore;
+
+import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @Author: Think
@@ -25,21 +32,41 @@ import org.springframework.web.multipart.MultipartFile;
 public class UserController extends BaseController {
 
     @Autowired
-    OssService ossService;
+    AliYunOssService ossService;
+
+    @Autowired
+    UserService userService;
 
     @Autowired
     IOService ioService;
 
-    @ApiOperation(value = "上传文件", notes = "上传文件")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "file", value = "文件", dataType = "File", required = true),
-            @ApiImplicitParam(name = "type", value = "文件作用, 1表示头像", dataType = "int", required = true, example = "1")
-    })
-    @PostMapping(path = "/upload")
-    public Result uploadFile(@RequestParam(value = "file") MultipartFile file,
-                             @RequestParam(value = "type") int type) {
-        // TODO ...
-        return null;
+    @ApiOperation(value = "上传头像", notes = "上传头像")
+    @PostMapping(path = "/uploadAvatar", consumes = "multipart/*", headers = "content-type=multipart/form-date")
+    public Result uploadAvatar(@RequestAttribute User user,
+                               @ApiParam(value = "上传的文件" ,required = true) MultipartFile file) {
+        String fileName = ioService.getFileName(file);
+        String ossFilePath = ossService.getFolder(1) + fileName;
+        String localFilePath = System.getProperty("user.dir") + File.separator + "tmp";
+        String successPath = ioService.download(file, localFilePath, fileName);
+        boolean success = ossService.uploadToOss(successPath, ossFilePath);
+        ioService.delete(successPath);
+        if (success) {
+            Map<String, String> response = new HashMap<>();
+            String avatar = ossService.getOssUrl(Constants.ALIYUN_BUCKET, ossService.getFolder(1), fileName);
+            user.setAvatar(avatar);
+            userService.save(user);
+            response.put("url", avatar);
+            return ResultUtil.success(response);
+        } else {
+            return ResultUtil.error(209);
+        }
+    }
+
+
+    @ApiOperation(value = "登出", notes = "用户登出")
+    @PostMapping(path = "/logout")
+    public Result logout(@RequestAttribute User user) {
+        return userService.deleteUserToken(user.getId()) ? ResultUtil.succeedNoData() : ResultUtil.error(211);
     }
 
 }

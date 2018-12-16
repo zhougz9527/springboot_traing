@@ -28,6 +28,7 @@ public class ExceptionController extends BaseController {
 
     @ExceptionHandler(Exception.class)
     public Result handleException(Exception e) {
+        e.printStackTrace();
         logger.info(e.getMessage());
         return ResultUtil.error(500);
     }

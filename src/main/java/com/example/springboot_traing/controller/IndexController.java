@@ -5,6 +5,7 @@ import com.example.springboot_traing.result.ResultUtil;
 import com.example.springboot_traing.service.MailService;
 import com.example.springboot_traing.service.RedisService;
 import com.example.springboot_traing.service.UserService;
+import com.example.springboot_traing.utils.CommonUtil;
 import com.example.springboot_traing.utils.RegexUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -14,7 +15,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 /**
  * @Author: Think
@@ -74,8 +78,15 @@ public class IndexController extends BaseController {
     public Result login(@RequestParam(value = "username") String username,
                         @RequestParam(value = "password") String password) {
         return RegexUtil.isEmail(username) && RegexUtil.isPassword(password) ?
-                Optional.ofNullable(userService.checkUserByUsernameAndPassword(username, password)).map(ResultUtil::success)
-                        .orElse(ResultUtil.error(207)) : ResultUtil.error(203);
+                Optional.ofNullable(userService.checkUserByUsernameAndPassword(username, password)).map(user -> {
+                    String token = userService.resetUserToken(user.getId());
+                    Map<String, String> response = new HashMap<>();
+                    if (StringUtils.isEmpty(token)) {
+                        return ResultUtil.error(500);
+                    }
+                    response.put("token", token);
+                    return ResultUtil.success(response);
+                }).orElse(ResultUtil.error(207)) : ResultUtil.error(203);
     }
 
 

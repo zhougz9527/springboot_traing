@@ -6,9 +6,11 @@ import com.example.springboot_traing.utils.CommonUtil;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.sql.Timestamp;
 import java.util.Optional;
+import java.util.UUID;
 
 /**
  * @Author: Think
@@ -20,6 +22,9 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
 
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    RedisService redisService;
 
     @Override
     public Optional<User> save(User user) {
@@ -55,9 +60,7 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
     public User checkUserByUsernameAndPassword(String username, String password) {
         return findByUsername(username).map(user -> {
             if (BCrypt.checkpw(password, user.getPassword())) {
-               String token = CommonUtil.md5(CommonUtil.random(11, CommonUtil.STRING) + System.currentTimeMillis(), true);
                user.setLastLogin(new Timestamp(System.currentTimeMillis()));
-               user.setToken(token);
                return user;
             } else {
                 return null;
@@ -76,5 +79,37 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
             save(user);
             return Optional.of(user);
         }).orElse(Optional.empty());
+    }
+
+    /*
+     * 重置用户登录的token
+     */
+    @Override
+    public String resetUserToken(int uid) {
+        String token = UUID.randomUUID().toString();
+        Object object = redisService.get(redisService.USER + uid);
+        if (null != object) {
+            redisService.delete(redisService.TOKEN + object.toString());
+        }
+        return userRepository.findById(uid).map(user -> {
+            redisService.set(redisService.USER + uid, token, redisService.TOKEN_EXPIRES);
+            redisService.set(redisService.TOKEN + token, user, redisService.TOKEN_EXPIRES);
+            return token;
+        }).orElse("");
+    }
+
+    /*
+     * 删除用户的token
+     */
+    @Override
+    public boolean deleteUserToken(int uid) {
+        boolean success = true;
+        if (redisService.exists(redisService.USER + uid)) {
+            String token = redisService.get(redisService.USER + uid).toString();
+            if (!redisService.delete(redisService.USER + uid) || !redisService.delete(redisService.TOKEN + token)) {
+                success = false;
+            }
+        }
+        return success;
     }
 }

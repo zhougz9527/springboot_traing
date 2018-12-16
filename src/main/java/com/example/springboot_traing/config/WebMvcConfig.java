@@ -17,7 +17,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry.addMapping("/**")
                 .allowedOrigins("*")
                 .allowedHeaders("*")
-                .allowedMethods("GET", "HEAD", "OPTION", "POST", "PUT", "DELETE")
+                .allowedMethods("GET", "HEAD", "OPTIONS", "POST", "PUT", "DELETE")
                 .allowCredentials(false).maxAge(3600)
                 .exposedHeaders("X-SpringBoot-Token");
     }

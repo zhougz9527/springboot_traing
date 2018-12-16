@@ -17,9 +17,6 @@ public class User extends BaseEntity {
     private String password;
     private Timestamp lastLogin;
 
-    @Transient
-    private String token;
-
     @Id
     @Column(name = "id")
     public int getId() {
@@ -70,15 +67,6 @@ public class User extends BaseEntity {
         this.lastLogin = lastLogin;
     }
 
-    @Transient
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -90,8 +78,7 @@ public class User extends BaseEntity {
         if (username != null ? !username.equals(user.username) : user.username != null) return false;
         if (avatar != null ? !avatar.equals(user.avatar) : user.avatar != null) return false;
         if (password != null ? !password.equals(user.password) : user.password != null) return false;
-        if (lastLogin != null ? !lastLogin.equals(user.lastLogin) : user.lastLogin != null) return false;
-        return token != null ? token.equals(user.token) : user.token == null;
+        return lastLogin != null ? lastLogin.equals(user.lastLogin) : user.lastLogin == null;
     }
 
     @Override
@@ -101,7 +88,6 @@ public class User extends BaseEntity {
         result = 31 * result + (avatar != null ? avatar.hashCode() : 0);
         result = 31 * result + (password != null ? password.hashCode() : 0);
         result = 31 * result + (lastLogin != null ? lastLogin.hashCode() : 0);
-        result = 31 * result + (token != null ? token.hashCode() : 0);
         return result;
     }
 }

@@ -21,6 +21,8 @@ public interface UserService {
 
     Optional<User> resetPassword(String username, String password);
 
+    String resetUserToken(int uid);
 
+    boolean deleteUserToken(int uid);
 
 }
