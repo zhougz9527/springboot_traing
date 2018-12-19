@@ -42,7 +42,7 @@ public class UserController extends BaseController {
 
     @ApiOperation(value = "上传头像", notes = "上传头像")
     @PostMapping(path = "/uploadAvatar", consumes = "multipart/*", headers = "content-type=multipart/form-date")
-    public Result uploadAvatar(@RequestAttribute User user,
+    public Result uploadAvatar(@ApiIgnore @RequestAttribute User user,
                                @ApiParam(value = "上传的文件" ,required = true) MultipartFile file) {
         String fileName = ioService.getFileName(file);
         String ossFilePath = ossService.getFolder(1) + fileName;
@@ -65,7 +65,7 @@ public class UserController extends BaseController {
 
     @ApiOperation(value = "登出", notes = "用户登出")
     @PostMapping(path = "/logout")
-    public Result logout(@RequestAttribute User user) {
+    public Result logout(@ApiIgnore @RequestAttribute User user) {
         return userService.deleteUserToken(user.getId()) ? ResultUtil.succeedNoData() : ResultUtil.error(211);
     }
 

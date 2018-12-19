@@ -14,4 +14,6 @@ public class Constants {
     public static final String ALIYUN_BUCKET = "springboot-traing";
     public static final String ALIYUN_ENDPOINT = "http://oss-cn-hongkong.aliyuncs.com";
 
+    public static final String ARTICLE_URL = "https://meiriyiwen.com/";
+
 }

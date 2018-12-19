@@ -22,6 +22,7 @@ public enum ResultEnum {
     UPLOAD_FAIL(209, "上传文件失败"),
     USER_NOT_LOGIN(210, "用户未登录"),
     LOGOUT_ERROR(211, "登出失败"),
+    CRAWLARTICLE_ERROR(212, "获取文章失败"),
     ROUTE_ERROR(404, "路由存在"),
     ERROR(500, "操作错误");
 
