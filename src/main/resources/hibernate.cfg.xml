@@ -7,6 +7,7 @@
     <property name="connection.url">jdbc:mysql://localhost:3306/traing</property>
     <property name="connection.driver_class">com.mysql.jdbc.Driver</property>
       <mapping class="com.example.springboot_traing.entity.User"/>
+      <mapping class="com.example.springboot_traing.entity.Pretty"/>
       <!-- <property name="connection.username"/> -->
     <!-- <property name="connection.password"/> -->
 

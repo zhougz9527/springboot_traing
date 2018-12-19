@@ -1,7 +1,5 @@
 package com.example.springboot_traing.service;
 
-import java.util.Optional;
-
 /**
  * @Author: Think
  * @Date: 2018/12/10
@@ -12,6 +10,7 @@ public interface RedisService {
     String CODE = "mail_code:";
     String TOKEN = "token:";
     String USER = "user:";
+    String PRETTY = "pretty:";
     int MAIL_EXPIRES = 60000;
     int CODE_EXPIRES = 300000;
     int TOKEN_EXPIRES = 21600000;

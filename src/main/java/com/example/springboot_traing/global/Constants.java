@@ -16,4 +16,8 @@ public class Constants {
 
     public static final String ARTICLE_URL = "https://meiriyiwen.com/";
 
+    public static final String PRETTY_URL = "https://gank.io/api/data/福利/";
+
+    public static final String IP_URL = "http://ip.taobao.com/service/getIpInfo.php?ip=";
+
 }

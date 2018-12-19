@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.security.SecureRandom;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -28,7 +29,7 @@ public class HttpRequestUtil {
 
         Request request = new Request.Builder()
                 .url(url)
-                .headers(Headers.of(headers))
+                .headers(Headers.of(null == headers ? new HashMap<>() : headers))
                 .build();
         String responseBody = "";
         Response response = null;
