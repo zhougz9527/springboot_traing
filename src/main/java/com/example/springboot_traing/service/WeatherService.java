@@ -1,5 +1,7 @@
 package com.example.springboot_traing.service;
 
+import com.alibaba.fastjson.JSONObject;
+
 import java.util.Map;
 
 /**
@@ -10,5 +12,7 @@ import java.util.Map;
 public interface WeatherService {
 
     Map<String, String> getIpCity(String ip);
+
+    JSONObject getWeatherByName(String name);
 
 }

@@ -8,6 +8,7 @@
     <property name="connection.driver_class">com.mysql.jdbc.Driver</property>
       <mapping class="com.example.springboot_traing.entity.User"/>
       <mapping class="com.example.springboot_traing.entity.Pretty"/>
+      <mapping class="com.example.springboot_traing.entity.City"/>
       <!-- <property name="connection.username"/> -->
     <!-- <property name="connection.password"/> -->
 

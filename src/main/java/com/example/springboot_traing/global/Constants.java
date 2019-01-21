@@ -20,4 +20,10 @@ public class Constants {
 
     public static final String IP_URL = "http://ip.taobao.com/service/getIpInfo.php?ip=";
 
+    public static final String WEATHER_URL = "http://t.weather.sojson.com/api/weather/city/";
+
+    // JWT
+    public static final String JWT_SECRET = "traing@jinmu#123456*2018&2019$superme";
+    public static final long JWT_TTLMILLIS = 86400*7; // 一个星期
+
 }

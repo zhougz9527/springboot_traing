@@ -1,17 +1,28 @@
 package com.example.springboot_traing;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.example.springboot_traing.entity.Article;
 import com.example.springboot_traing.service.ArticleService;
+import com.example.springboot_traing.service.CityService;
 import com.example.springboot_traing.service.PrettyService;
 import com.example.springboot_traing.service.RedisService;
+import com.example.springboot_traing.utils.HttpRequestUtil;
+import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.io.File;
+import java.io.IOException;
 import java.sql.Date;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 @RunWith(SpringRunner.class)
@@ -26,6 +37,9 @@ public class SpringbootTraingApplicationTests {
 
     @Autowired
     RedisService redisService;
+
+    @Autowired
+    CityService cityService;
 
 	@Test
 	public void contextLoads() {
@@ -56,6 +70,29 @@ public class SpringbootTraingApplicationTests {
                 e.printStackTrace();
             }
         }
+    }
+
+    @Test
+    public void pushCityToMysql() throws IOException {
+        File file = new File("F:\\_city.json");
+        String content = FileUtils.readFileToString(file, "utf-8");
+        JSONArray jsonArray = JSON.parseArray(content);
+        jsonArray.forEach(json -> {
+            JSONObject jsonObject = (JSONObject) json;
+            int pid = jsonObject.getInteger("pid");
+            String name = jsonObject.getString("city_name");
+            String code = jsonObject.getString("city_code");
+            cityService.save(pid, name, code);
+            System.out.println("pid: " + pid + ", name: " + name + ", code: " + code);
+        });
+    }
+
+    @Test
+    public void streamTest() {
+	    List<String> stringList = new ArrayList<>();
+	    stringList.add("a");
+	    stringList.add("b");
+	    stringList.add("c");
     }
 
 }

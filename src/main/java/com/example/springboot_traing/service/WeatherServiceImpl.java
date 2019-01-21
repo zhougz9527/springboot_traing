@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.example.springboot_traing.global.Constants;
 import com.example.springboot_traing.utils.HttpRequestUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -17,10 +18,12 @@ import java.util.Map;
 @Service
 public class WeatherServiceImpl extends BaseServiceImpl implements WeatherService {
 
+    @Autowired
+    CityService cityService;
 
     @Override
     public Map<String, String> getIpCity(String ip) {
-        ip = "127.0.0.1".equals(ip) ? "36.24.186.191" : ip;
+        ip = "127.0.0.1".equals(ip) ? "60.186.244.58" : ip;
         String url = Constants.IP_URL + ip;
         Map<String, String> headers = new HashMap<>();
         headers.put("Referer", "https://www.google.com.hk/");
@@ -41,5 +44,15 @@ public class WeatherServiceImpl extends BaseServiceImpl implements WeatherServic
         map.put("city", city);
         map.put("isp", isp);
         return map;
+    }
+
+    @Override
+    public JSONObject getWeatherByName(String name) {
+        return cityService.findByName(name).map(city -> {
+            String response = HttpRequestUtil.get(Constants.WEATHER_URL + city.getCode(), null);
+            JSONObject jsonObject = JSON.parseObject(response);
+            logger.info(response);
+            return jsonObject.getJSONObject("data");
+        }).orElse(new JSONObject());
     }
 }

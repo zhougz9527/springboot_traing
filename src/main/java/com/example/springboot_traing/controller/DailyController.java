@@ -1,5 +1,6 @@
 package com.example.springboot_traing.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.example.springboot_traing.result.Result;
 import com.example.springboot_traing.result.ResultUtil;
 import com.example.springboot_traing.service.ArticleService;
@@ -70,10 +71,14 @@ public class DailyController extends BaseController {
 
 
     @ApiOperation(value = "每日天气", notes = "每日天气")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "city", value = "城市名称", dataType = "string", required = true, example = "杭州")
+    })
     @PostMapping(path = "/weather")
-    public Result weather(HttpServletRequest httpServletRequest) {
-        Map<String, String> map = weatherService.getIpCity(httpServletRequest.getRemoteAddr());
-        return ResultUtil.success(map);
+    public Result weather(@RequestParam(name = "city", defaultValue = "杭州") String city) {
+//        Map<String, String> map = weatherService.getIpCity(httpServletRequest.getRemoteAddr());
+        JSONObject jsonObject = weatherService.getWeatherByName(city);
+        return ResultUtil.success(jsonObject);
     }
 
 }

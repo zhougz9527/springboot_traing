@@ -1,10 +1,14 @@
 package com.example.springboot_traing.config;
 
 import com.alibaba.fastjson.JSON;
+import com.auth0.jwt.JWT;
 import com.example.springboot_traing.entity.User;
 import com.example.springboot_traing.result.Result;
 import com.example.springboot_traing.result.ResultUtil;
 import com.example.springboot_traing.service.RedisService;
+import com.example.springboot_traing.service.UserService;
+import com.example.springboot_traing.utils.JWTUtil;
+import io.jsonwebtoken.Claims;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.omg.CORBA.OBJ_ADAPTER;
@@ -29,6 +33,9 @@ public class PermissionFilter implements Filter {
 
     @Autowired
     RedisService redisService;
+
+    @Autowired
+    UserService userService;
 
     private static final Logger logger = LogManager.getLogger();
 
@@ -61,10 +68,14 @@ public class PermissionFilter implements Filter {
             httpServletResponse.setStatus(HttpServletResponse.SC_OK);
         } else {
             if (!StringUtils.isEmpty(token)) {
-                Object object = redisService.get(redisService.TOKEN + token);
-                if (null != object) {
-                    httpServletRequest.setAttribute("user", object);
-                    success = true;
+                Claims claims = JWTUtil.parseJWT(token);
+                if (JWTUtil.verifyJWT(token) && null != claims) {
+                    String username = (String) claims.get("username");
+                    User user = userService.findByUsername(username).orElse(null);
+                    if (null != user) {
+                        httpServletRequest.setAttribute("user", user);
+                        success = true;
+                    }
                 }
             } else {
                 result = ResultUtil.error(210);

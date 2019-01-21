@@ -1,11 +1,13 @@
 package com.example.springboot_traing.controller;
 
+import com.example.springboot_traing.global.Constants;
 import com.example.springboot_traing.result.Result;
 import com.example.springboot_traing.result.ResultUtil;
 import com.example.springboot_traing.service.MailService;
 import com.example.springboot_traing.service.RedisService;
 import com.example.springboot_traing.service.UserService;
 import com.example.springboot_traing.utils.CommonUtil;
+import com.example.springboot_traing.utils.JWTUtil;
 import com.example.springboot_traing.utils.RegexUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -79,7 +81,7 @@ public class IndexController extends BaseController {
                         @RequestParam(value = "password") String password) {
         return RegexUtil.isEmail(username) && RegexUtil.isPassword(password) ?
                 Optional.ofNullable(userService.checkUserByUsernameAndPassword(username, password)).map(user -> {
-                    String token = userService.resetUserToken(user.getId());
+                    String token = JWTUtil.generateJWT(Constants.JWT_TTLMILLIS, user);
                     Map<String, String> response = new HashMap<>();
                     if (StringUtils.isEmpty(token)) {
                         return ResultUtil.error(500);
